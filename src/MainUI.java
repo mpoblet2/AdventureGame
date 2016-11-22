@@ -2,9 +2,6 @@ import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
 /**
  * File: MainUI
  * Author: Ben Kinder and Mika Poblete
