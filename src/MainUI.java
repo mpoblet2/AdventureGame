@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * File: MainUI
- * Author: Ben Kinder
+ * Author: Ben Kinder and Mika Poblete
  * Date Created: 11/20/16
- * Email: brkinder1@gmail.com
- * Description
+ * Email: brkinder1@gmail.com, mpoblete@friendsbalt.org
+ * Description: A voting probability simulator.
  **/
 public class MainUI  extends PApplet{
     private ControlP5 cp5;
