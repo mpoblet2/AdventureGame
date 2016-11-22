@@ -2,6 +2,9 @@ import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
 /**
  * File: MainUI
  * Author: Ben Kinder
@@ -22,10 +25,12 @@ public class MainUI  extends PApplet{
     private Textarea question;
     private PFont font;
     private int questionNum = 1;
-    private boolean choiceA = false;
-    private boolean choiceB = false;
-    private boolean choiceC = false;
-    private boolean choiceD = false;
+    private float chanceOfFail = 0;
+    private boolean isDRE = false;
+    private boolean isOptical = false;
+    private boolean isPunchCards = false;
+    private boolean isLever = false;
+    private boolean shouldWait = false;
 
     public static void main(String[] args) {
         PApplet.main("MainUI");
@@ -74,17 +79,65 @@ public class MainUI  extends PApplet{
 
         buttonOne.setLabel("Yes");
         buttonTwo.setLabel("No");
-        buttonThree.setVisible(false);
-        buttonFour.setVisible(false);
+        buttonThree.setLabel("");
+        buttonFour.setLabel("");
+
     }
 
     private void question2() {
-        question.setText("What is your socioeconomic class?");
+        question.setText("What voting method would you like to use?\n\n" +
+                "A) Direct Recording Electronic\n" +
+                "B) Optical Scan Ballot\n" +
+                "C) Punch Cards\n" +
+                "D) Lever Machine");
 
-        buttonOne.setLabel("Upper");
-        buttonTwo.setLabel("Middle");
-        buttonThree.setVisible(true);
-        buttonThree.setLabel("Lower");
+        buttonOne.setLabel("A");
+        buttonTwo.setLabel("B");
+        buttonThree.setLabel("C");
+        buttonFour.setLabel("D");
+    }
+
+    private void question3() {
+        question.setText("How well do you know English?");
+
+        buttonOne.setLabel("Fluent");
+        buttonTwo.setLabel("Moderate");
+        buttonThree.setLabel("Poor");
+        buttonFour.setLabel("No English");
+    }
+
+    public void question4() {
+        question.setText("What is your age?");
+
+        buttonOne.setLabel("Over 65");
+        buttonTwo.setLabel("Under 65");
+        buttonThree.setLabel("");
+        buttonFour.setLabel("");
+    }
+
+    public void question5() {
+        question.setText("Do you have a disability?");
+
+        buttonOne.setLabel("Physical");
+        buttonTwo.setLabel("Hearing");
+        buttonThree.setLabel("Sight");
+        buttonFour.setLabel("None");
+    }
+
+    public void end() {
+        float chance = random(0, 1);
+        if (chanceOfFail >= chance)
+            question.setText("Your vote was not correctly cast\n\n" +
+                    "The chance of your vote failing was:\n" +
+                    chanceOfFail * 100 + " percent");
+        else
+            question.setText("Your vote was correctly cast!\n\n" +
+                    "The chance of your vote failing was:\n" +
+                    chanceOfFail * 100 + " percent");
+        buttonOne.setLabel("");
+        buttonTwo.setLabel("");
+        buttonThree.setLabel("");
+        buttonFour.setLabel("Replay?");
     }
 
     public void draw() {
@@ -92,21 +145,125 @@ public class MainUI  extends PApplet{
     }
 
     public void buttonOne() {
-        if (questionNum == 1){
+        if (questionNum == 1) {
             questionNum++;
             question2();
+            return;
+        }
+        if (questionNum == 2) {
+            isDRE = true;
+            questionNum++;
+            question3();
+            return;
+        }
+        if (questionNum == 3) {
+            questionNum++;
+            question4();
+            return;
+        }
+        if (questionNum == 4) {
+            if (isDRE)
+                chanceOfFail += 0.15;
+            if (isOptical)
+                chanceOfFail += 0.15;
+            if (isPunchCards)
+                chanceOfFail += 0.20;
+            questionNum++;
+            question5();
+            return;
+        }
+        if (questionNum == 5) {
+            chanceOfFail += 0.05;
+            questionNum++;
+            end();
+            return;
         }
     }
 
     public void buttonTwo() {
         if (questionNum == 1) {
             question.setText("You did not vote.");
+            questionNum = 6;
+            buttonOne.setLabel("");
+            buttonTwo.setLabel("");
+            buttonThree.setLabel("");
+            buttonFour.setLabel("Replay?");
+            return;
+        }
+        if (questionNum == 2) {
+            isOptical = true;
+            chanceOfFail += 0.02;
+            questionNum++;
+            question3();
+            return;
+        }
+        if (questionNum == 3) {
+            if (!isDRE)
+                chanceOfFail += 0.02;
+            questionNum++;
+            question4();
+            return;
+        }
+        if (questionNum == 4) {
+            questionNum++;
+            question5();
+            return;
+        }
+        if (questionNum == 5) {
+            chanceOfFail += 0.03;
+            questionNum++;
+            end();
+            return;
         }
     }
 
     public void buttonThree() {
+        if (questionNum == 2) {
+            isPunchCards = true;
+            chanceOfFail += 0.07;
+            questionNum++;
+            question3();
+            return;
+        }
+        if (questionNum == 3) {
+            if (!isDRE)
+                chanceOfFail += 0.15;
+            questionNum++;
+            question4();
+            return;
+        }
+        if (questionNum == 5) {
+            chanceOfFail += 0.10;
+            questionNum++;
+            end();
+            return;
+        }
     }
 
     public void buttonFour() {
+        if (questionNum == 2) {
+            isLever = true;
+            chanceOfFail += 0.01;
+            questionNum++;
+            question3();
+            return;
+        }
+        if (questionNum == 3) {
+            if (!isDRE)
+                chanceOfFail += 0.50;
+            questionNum++;
+            question4();
+            return;
+        }
+        if (questionNum == 5) {
+            questionNum++;
+            end();
+            return;
+        }
+        if (questionNum == 6) {
+            questionNum = 1;
+            question1();
+            return;
+        }
     }
 }
