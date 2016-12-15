@@ -8,7 +8,6 @@ import processing.core.PFont;
  * Date Created: 11/20/16
  * Email: brkinder1@gmail.com, mpoblete@friendsbalt.org
  * Description: A voting probability simulator.
- * Test Sig
  **/
 public class MainUI  extends PApplet{
     private ControlP5 cp5;
